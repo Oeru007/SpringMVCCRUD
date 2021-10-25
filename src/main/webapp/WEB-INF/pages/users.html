@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>All users page</title>
 </head>
 <body>
 <div>
@@ -24,7 +24,7 @@
             <td><span th:text="${user.getEmail()}">E-mail</span></td>
             <td>
                 <form th:method="GET" th:action="@{/users/{id}/edit(id=${user.getId()})}">
-                <input type="submit" value="Edit" />
+                <input type="submit" value="edit" />
                 </form>
                 <form th:method="DELETE" th:action="@{/users/{id}(id=${user.getId()})}">
                     <input type="submit" value="delete" />
