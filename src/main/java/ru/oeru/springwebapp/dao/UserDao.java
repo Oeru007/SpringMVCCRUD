@@ -11,4 +11,5 @@ public interface UserDao {
     void update(User user);
     User find(Long id);
     List<User> listUsers();
+    User findUserByUsername(String username);
 }

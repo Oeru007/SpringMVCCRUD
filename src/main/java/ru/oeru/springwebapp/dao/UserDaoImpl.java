@@ -2,6 +2,7 @@ package ru.oeru.springwebapp.dao;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import ru.oeru.springwebapp.model.Role;
 import ru.oeru.springwebapp.model.User;
 
 import javax.persistence.EntityManager;
@@ -12,6 +13,7 @@ public class UserDaoImpl implements UserDao{
 
     @PersistenceContext
     private EntityManager entityManager;
+
 
     @Override
     public void add(User user) {
@@ -41,5 +43,12 @@ public class UserDaoImpl implements UserDao{
     @Override
     public List<User> listUsers() {
         return entityManager.createQuery("select u from User u", User.class).getResultList();
+    }
+
+    @Override
+    public User findUserByUsername(String username) {
+        return entityManager.createQuery("select u from User u where u.username=:name", User.class)
+                .setParameter("name", username)
+                .getSingleResult();
     }
 }

@@ -23,10 +23,10 @@
             <td><span th:text="${user.getLastName()}">LastName</span></td>
             <td><span th:text="${user.getEmail()}">E-mail</span></td>
             <td>
-                <form th:method="GET" th:action="@{/users/{id}/edit(id=${user.getId()})}">
+                <form th:method="GET" th:action="@{/admin/{id}/edit(id=${user.getId()})}">
                 <input type="submit" value="edit" />
                 </form>
-                <form th:method="DELETE" th:action="@{/users/{id}(id=${user.getId()})}">
+                <form th:method="DELETE" th:action="@{/admin/{id}(id=${user.getId()})}">
                     <input type="submit" value="delete" />
                 </form>
             </td>
@@ -35,7 +35,16 @@
     </table>
 </div>
 <div>
-    <a href="/users/new">Add new user</a>
+    <form method="get" action="/admin/new">
+        <input type="submit" value="Add new user">
+    </form>
 </div>
+<div>
+    <form method="get" action="/userdetails">
+        <input type="submit" value="My user details">
+    </form>
+</div>
+<br/>
+<div th:insert="~{logoutfragment :: logout}"></div>
 </body>
 </html>

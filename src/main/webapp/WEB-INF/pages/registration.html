@@ -7,7 +7,7 @@
 </head>
 <body>
     <div>
-        <form th:method="POST" th:action="@{/admin}" th:object="${user}">
+        <form th:method="POST" th:action="@{/registration}" th:object="${user}">
             <label for="name">Enter name: </label>
             <input type="text" th:field="*{firstName}" id="name" />
             <br/>
@@ -31,9 +31,9 @@
             <br/>
             <input type="submit" value="Add user"/>
         </form>
+
     </div>
     <p><span th:text="${userIsExist}">User is exist</span></p>
     <p><span th:text="${formError}">Form filling error</span></p>
-    <div th:insert="~{logoutfragment :: logout}"></div>
 </body>
 </html>
