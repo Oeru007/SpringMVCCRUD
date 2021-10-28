@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -24,7 +25,7 @@ public class User implements UserDetails {
     @Column(name = "email")
     private String email;
 
-    @Column(unique = true)
+    @Column(name = "username")
     private String username;
 
     @Column
@@ -36,10 +37,10 @@ public class User implements UserDetails {
     @Transient
     private String confirm;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private Set<Role> roles = new HashSet<>();
 
     public User() {
@@ -53,6 +54,7 @@ public class User implements UserDetails {
 
     public void addRole(Role role){
         roles.add(role);
+        role.getUsers().add(this);
     }
 
     @Override
@@ -152,5 +154,18 @@ public class User implements UserDetails {
 
     public void setConfirm(String confirm) {
         this.confirm = confirm;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(getId(), user.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

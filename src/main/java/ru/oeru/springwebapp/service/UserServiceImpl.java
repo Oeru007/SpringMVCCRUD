@@ -10,29 +10,25 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.oeru.springwebapp.dao.RoleDao;
 import ru.oeru.springwebapp.dao.UserDao;
 import ru.oeru.springwebapp.model.PossibleRoles;
-import ru.oeru.springwebapp.model.Role;
 import ru.oeru.springwebapp.model.User;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
     UserDao userDao;
-    RoleDao roleDao;
+    RoleService roleService;
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public void setRoleService(RoleService roleService) {
+        this.roleService = roleService;
+    }
 
     @Autowired
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
-
-    @Autowired
-    public void setRoleDao(RoleDao roleDao) {
-        this.roleDao = roleDao;
-    }
-
-    PasswordEncoder passwordEncoder;
 
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
@@ -42,18 +38,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public boolean add(User user) {
-        try {
-            findUserByUsername(user.getUsername());
+        User userFromDb = findUserByUsername(user.getUsername());
+        if (userFromDb != null){
             return false;
-        } catch (RuntimeException ignore) {
-
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.getRoles().add(new Role(PossibleRoles.getUserRole()));
+        roleService.createRoleIfNotExist(PossibleRoles.createUserRole());
+        user.addRole(roleService.findByRole(PossibleRoles.getUserRole()));
         if (user.getConfirm() != null) {
-            user.getRoles().add(new Role(PossibleRoles.getAdminRole()));
+            roleService.createRoleIfNotExist(PossibleRoles.createAdminRole());
+            user.addRole(roleService.findByRole(PossibleRoles.getAdminRole()));
         }
-        user.setRoles(user.getRoles());
         userDao.add(user);
         return true;
     }
@@ -73,18 +68,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void update(User user) {
-        User user1 = userDao.findUserByUsername(user.getUsername());
+        User userFromDB = userDao.find(user.getId());
         if (user.getConfirm() == null){
-            user1.getRoles().stream()
-                    .filter(role -> role.getName()
-                    .equals(PossibleRoles.getAdminRole()))
-                    .forEach(role -> roleDao.delete(role));
-            user1.getRoles().removeIf(role -> role.getName().equals(PossibleRoles.getAdminRole()));
+            userFromDB.getRoles().remove(PossibleRoles.createAdminRole());
 
         } else {
-            user1.getRoles().add(new Role(PossibleRoles.getAdminRole()));
+            userFromDB.getRoles().add(PossibleRoles.createAdminRole());
         }
-        userDao.update(user1);
+        userFromDB.setFirstName(user.getFirstName());
+        userFromDB.setLastName(user.getLastName());
+        userFromDB.setEmail(user.getEmail());
+        userFromDB.setUsername(user.getUsername());
+        userFromDB.setPassword(passwordEncoder.encode(user.getPassword()));
+        userDao.update(userFromDB);
     }
 
     @Override

@@ -20,6 +20,7 @@ public class AdminController {
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
+
     @GetMapping
     public String usersPage(Model model){
         List<User> users = userService.listUsers();
@@ -58,6 +59,7 @@ public class AdminController {
     @PatchMapping("/{id}")
     public String updateUser(@ModelAttribute("user") User user, @PathVariable("id") Long id, Model model) {
         UserUtils.formValidation(user, model);
+        user.setId(id);
         if (model.containsAttribute("formError")){
             return "edit";
         }

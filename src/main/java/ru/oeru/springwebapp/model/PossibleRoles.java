@@ -8,4 +8,10 @@ public enum PossibleRoles {
     public static String getAdminRole() {
         return ROLE_ADMIN.name();
     }
+    public static Role createUserRole() {
+        return new Role(getUserRole());
+    }
+    public static Role createAdminRole() {
+        return new Role(getAdminRole());
+    }
 }
