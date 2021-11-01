@@ -16,9 +16,9 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
-    UserDao userDao;
-    RoleService roleService;
-    PasswordEncoder passwordEncoder;
+    private UserDao userDao;
+    private RoleService roleService;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public void setRoleService(RoleService roleService) {

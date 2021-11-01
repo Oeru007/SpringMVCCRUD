@@ -9,7 +9,7 @@ import ru.oeru.springwebapp.model.Role;
 @Transactional
 public class RoleServiceImpl implements RoleService {
 
-    RoleDao roleDao;
+    private RoleDao roleDao;
 
     @Autowired
     public void setRoleDao(RoleDao roleDao) {

@@ -9,7 +9,7 @@ import javax.persistence.PersistenceContext;
 @Repository
 public class RoleDaoImpl implements RoleDao {
     @PersistenceContext
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Override
     public void delete(Role role) {
